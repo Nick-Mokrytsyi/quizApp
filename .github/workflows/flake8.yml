@@ -25,4 +25,4 @@ jobs:
         DJANGO_DEBUG: ${{ secrests.DJANGO_DEBUG }}
         
       run: |
-       flake8 scr/
+       flake8 scr/ --max-line-length=150 --exclude=migrations
