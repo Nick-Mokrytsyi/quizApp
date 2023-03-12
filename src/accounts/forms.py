@@ -4,7 +4,6 @@ from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserChangeForm
 from django.core.exceptions import ValidationError
 from django.forms import widgets
-
 from .apps import user_register
 
 
@@ -77,3 +76,14 @@ class UserUpdateForm(UserChangeForm):
             'city',
             'avatar'
         )
+
+
+class UserReactivateForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = (
+            'email',
+        )
+        labels = {
+            'email': "Please fill in the same email as on registration",
+        }

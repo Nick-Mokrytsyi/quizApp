@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,9 +9,11 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.views.generic import UpdateView
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-from .forms import UserRegisterForm, UserUpdateForm
-from .utils import signer
+from .forms import UserRegisterForm, UserUpdateForm, UserReactivateForm
+from .utils import signer, send_activation_notification
 
 
 class UserRegisterView(CreateView):
@@ -39,6 +39,30 @@ def user_activate(request, sign):
         user.save()
 
     return render(request, template)
+
+
+def user_reactivate(request):
+    if request.method == "POST":
+        form = UserReactivateForm(request.POST)
+
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            User = get_user_model()
+            user = User.objects.filter(email=email).first()
+
+            match user:
+                case None:
+                    return render(request, 'accounts/no_user_in_database.html')
+                case user if user.is_active and user.is_activated:
+                    return render(request, 'accounts/user_is_activated.html')
+                case _:
+                    send_activation_notification(user)
+                    return render(request, 'accounts/user_register_done.html')
+
+        return render(request, 'accounts/user_reactivate.html', {'form': form})
+
+    form = UserReactivateForm()
+    return render(request, 'accounts/user_reactivate.html', {'form': form})
 
 
 class UserLoginView(LoginView):

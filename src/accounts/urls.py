@@ -7,7 +7,7 @@ from .views import UserProfileUpdateView
 from .views import UserRegisterView
 from .views import user_activate
 from .views import user_profile_view
-
+from .views import user_reactivate
 app_name = 'accounts'
 
 urlpatterns = [
@@ -19,4 +19,6 @@ urlpatterns = [
     path('logout/', UserLogoutView.as_view(), name='logout'),
     path('profile/', user_profile_view, name='profile'),
     path('profile/update/', UserProfileUpdateView.as_view(), name='profile_update'),
+    path('update_activation/', user_reactivate, name='update_activation'),
+
 ]
