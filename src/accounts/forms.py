@@ -10,14 +10,14 @@ from .apps import user_register
 class UserRegisterForm(forms.ModelForm):
     email = forms.EmailField(label='email')
     password1 = forms.CharField(
-        label='password',
+        label='registration',
         widget=forms.PasswordInput,
         help_text=password_validation.password_validators_help_text_html
     )
     password2 = forms.CharField(
-        label='confirm password',
+        label='confirm registration',
         widget=forms.PasswordInput,
-        help_text='please repeat password'
+        help_text='please repeat registration'
     )
 
     def clean_password1(self):
